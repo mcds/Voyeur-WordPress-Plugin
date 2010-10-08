@@ -25,17 +25,10 @@ var pluginURL = '<?php echo VWP_URL; // VWP_URL already defined in voyeurWP.php.
 
 // Load Thickbox animation and close button.
 if (typeof tb_pathToImage != 'string') {
-<<<<<<< HEAD
 	var tb_pathToImage = "<?php echo get_bloginfo('wpurl').'/wp-includes/js/thickbox'; ?>/loadingAnimation.gif";
 }
 if (typeof tb_closeImage != 'string') {
 	var tb_closeImage = "<?php echo get_bloginfo('wpurl').'/wp-includes/js/thickbox'; ?>/tb-close.png";
-=======
-	var tb_pathToImage = "<?php echo get_bloginfo('url').'/wp-includes/js/thickbox'; ?>/loadingAnimation.gif";
-}
-if (typeof tb_closeImage != 'string') {
-	var tb_closeImage = "<?php echo get_bloginfo('url').'/wp-includes/js/thickbox'; ?>/tb-close.png";
->>>>>>> d65dc69baafa2be4e80bc033b37fe7948323e8cd
 }
 
 jQuery(document).ready(function($) {
@@ -58,10 +51,7 @@ jQuery(document).ready(function($) {
 	}
 
 	if (allowAutoReveal == 1) {
-<<<<<<< HEAD
 		
-=======
->>>>>>> d65dc69baafa2be4e80bc033b37fe7948323e8cd
 		if (allowUser != 1) { // If allowAutoReveal is on and users cannot choose options, hide the 'Reveal' button.
       $('#voyeurReveal').attr('style', 'display:none;');
     }

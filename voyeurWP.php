@@ -1,21 +1,13 @@
 <?php
 /**
  * @package Wordpress
-<<<<<<< HEAD
  * @version 0.1
-=======
- * @version 0.5
->>>>>>> d65dc69baafa2be4e80bc033b37fe7948323e8cd
  */
 /*
 Plugin Name: Voyeur
 Plugin URI: http://voyeur.hermeneuti.ca/
 Description: Allows Voyeur to reveal text trends within your Wordpress posts.
-<<<<<<< HEAD
 Version: 0.1
-=======
-Version: 0.5
->>>>>>> d65dc69baafa2be4e80bc033b37fe7948323e8cd
 Author: Corey Slavnik and Stéfan Sinclair
 Author URI: http://stefansinclair.name/
 License: GPL2
@@ -549,15 +541,9 @@ function vwp_feedRewrite($wp_rewrite) {
  */
 function vwp_addFeed() {
 	global $wp_rewrite;
-<<<<<<< HEAD
 	add_feed('voyeur', 'vwp_createFeed');
 	add_filter('generate_rewrite_rules', 'vwp_feedRewrite');
 	$wp_rewrite->flush_rules();
-=======
-  add_feed('voyeur', 'vwp_createFeed');
-	add_filter('generate_rewrite_rules', 'vwp_feedRewrite');
-  $wp_rewrite->flush_rules();
->>>>>>> d65dc69baafa2be4e80bc033b37fe7948323e8cd
 } // end vwp_addFeed()
 
 // Check for the required plugin functions - this will prevent fatal
