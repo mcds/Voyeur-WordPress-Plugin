@@ -204,7 +204,7 @@ function vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, viewSep
 		width: <?php if (isset($vwpOptions['voyeur_width'])) echo $vwpOptions['voyeur_width']; else echo '200'; ?>,
 		height: <?php if (isset($vwpOptions['voyeur_height'])) echo $vwpOptions['voyeur_height']; else echo '250'; ?>
 	}).removeAttr('style'); // Remove 'display:none'.
-	viewSeparate.html('<small><a href="'+ fullVoyeurURL +'" target="_blank"><?php echo __('View in separate window.'); ?></a></small>');
+	//viewSeparate.html('<small><a href="'+ fullVoyeurURL +'" target="_blank"><?php echo __('View in separate window.'); ?></a></small>');
 } // end vwp_loadVoyeur()
 
 /**

@@ -416,12 +416,12 @@ if (!class_exists('VoyeurWP')) {
 			$vwpOptions = $this->vwp_getAdminOptions(); // Get stats like width & height.
 			// Echo the iframe with custom admin paramaters (width-% and height-px).
 			echo '<div id="voyeurContainer">' . "\n";
-			echo '<br />';
+			//echo '<br />';
 			echo '<img id="voyeurLogo" src="' . WP_PLUGIN_URL . '/voyeurWP/voyeur.png" />';
 			echo '<iframe id="voyeurIframe" style="display:none;">';
 			echo '<p>' . __('Your browser does not support iframes - Voyeur will not run.') . '</p></iframe>' . "\n";
-			echo '<div id="viewSeparate"><!-- "View separate" link placed here. --></div>' . "\n";
-			echo '</div>' . "\n" . '<br />';
+			//echo '<div id="viewSeparate"><!-- "View separate" link placed here. --></div>' . "\n";
+			echo '</div>' . "\n";
 			?>
 
 			<input alt="#TB_inline?height=450&width=400&inlineId=voyeurControls" title="Voyeur - <?php echo __('Reveal your texts'); ?>" class="thickbox" type="button" value="Reveal" id="voyeurReveal" />
