@@ -135,6 +135,11 @@ if (!class_exists('VoyeurWP')) {
 				} else {
 					$vwpOptions['allow_post_reveal'] = NULL;
 				}
+				if (isset($_POST['remove_func_words']) && $_POST['remove_func_words'] == 'on') {
+					$vwpOptions['remove_func_words'] = 1;
+				} else {
+					$vwpOptions['remove_func_words'] = NULL;
+				}
 
 				$vwpOptions['voyeur_authors'] = NULL; // Reset voyeur_authors to read in new selected authors.
 				// Store author data.
@@ -247,6 +252,10 @@ if (!class_exists('VoyeurWP')) {
 				<p>
 					<input type="checkbox" name="allow_post_reveal" <?php if ($vwpOptions['allow_post_reveal'] == 1) echo ' checked="checked" '; ?>/>
 					<label for="allow_post_reveal"><?php echo __('Generate links to reveal individual posts.'); ?></label>
+				</p>
+				<p>
+					<input type="checkbox" name="remove_func_words" <?php if ($vwpOptions['remove_func_words'] == 1) echo ' checked="checked" '; ?>/>
+					<label for="remove_func_words"><?php echo __('Remove function words like "the".'); ?></label>
 				</p>
 				<hr />
 				<h3><?php echo __('Filter settings'); ?></h3>
@@ -458,7 +467,7 @@ if (!class_exists('VoyeurWP')) {
 		function vwp_getAdminOptions() {
 			$adminOptions = array( 'voyeur_width' => '200',
 				'voyeur_height' => '250', 'voyeur_tool' => 'Cirrus', 'allow_auto_reveal' => 1,
-				'allow_user' => NULL, 'allow_post_reveal' => NULL, 'voyeur_tags' => '', 'voyeur_time_day' => '', 'voyeur_time_month' => date('m'),
+				'allow_user' => NULL, 'remove_func_words' => 1, 'allow_post_reveal' => NULL, 'voyeur_tags' => '', 'voyeur_time_day' => '', 'voyeur_time_month' => date('m'),
 				'voyeur_time_year' => ''
 				);
 			$vwpOptions = get_option($this->widgetOptionsName);

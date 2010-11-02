@@ -38,6 +38,7 @@ jQuery(document).ready(function($) {
 	var voyeurTool = '<?php if (isset($vwpOptions['voyeur_tool'])) echo $vwpOptions['voyeur_tool']; else echo 'Cirrus'; ?>';
 	var allowAutoReveal = '<?php if (isset($vwpOptions['allow_auto_reveal'])) echo $vwpOptions['allow_auto_reveal']; ?>';
 	var allowUser = '<?php if (isset($vwpOptions['allow_user'])) echo $vwpOptions['allow_user']; ?>';
+  var removeFuncWords = '<?php if (isset($vwpOptions['remove_func_words'])) echo $vwpOptions['remove_func_words']; ?>';
 	var voyeurWindow = $('#voyeurControls');
 	var voyeurWindowAjax = $('#voyeurControlsAjax');
 	var voyeurLogo = $('#voyeurLogo');
@@ -51,11 +52,10 @@ jQuery(document).ready(function($) {
 	}
 
 	if (allowAutoReveal == 1) {
-		
 		if (allowUser != 1) { // If allowAutoReveal is on and users cannot choose options, hide the 'Reveal' button.
       $('#voyeurReveal').attr('style', 'display:none;');
     }
-		vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, viewSeparate);
+		vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate);
 	}
 
   // ===============================
@@ -111,10 +111,10 @@ jQuery(document).ready(function($) {
 					URLParams += '&year=' + $('#voyeur_time_year').val();
 				}
 
-				vwp_loadVoyeur($('#voyeur_tool').val(), allowUser, voyeurLogo, voyeurIframe, viewSeparate, URLParams);
+				vwp_loadVoyeur($('#voyeur_tool').val(), allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, URLParams);
 			});
 		} else {
-			vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, viewSeparate);
+			vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate);
 		}
 	});
 
@@ -144,7 +144,7 @@ jQuery(document).ready(function($) {
     			URLParams += '&year=' + $(this).html();
     		}
     	});
-    	vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, viewSeparate, URLParams);
+    	vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, URLParams);
     });
 
 }); // end jQuery function($)
@@ -181,7 +181,7 @@ function vwp_loadAjax(voyeurWindowAjax, ajaxRef) { // Launch the Thickbox via AJ
  * @param object viewSeparate References jQuery where the viewSeparate div is.
  * @param string URLParams The set user URL Params. (This may not always be set if users cannot choose settings.)
  */
-function vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, viewSeparate, URLParams) {
+function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, URLParams) {
 	if (typeof URLParams == 'undefined') { // If user did not set params, set params to admin-defined options (with commas after value.)
 		URLParams = '?feed=voyeur';
 		URLParams += '&author=' + '<?php if (isset($vwpOptions['voyeur_authors'])) echo $vwpOptions['voyeur_authors']; ?>';
@@ -196,7 +196,11 @@ function vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, viewSep
 	var pageURL = '<?php echo $pageURL; ?>' + URLParams;
 	var pageURLStrip = '<?php echo preg_replace('/[\W]/', '', $pageURL); ?>' + URLParams;
 	voyeurLogo.attr('style', 'display:none;'); // Hide the Voyeur logo when user chooses options.
-	var fullVoyeurURL = 'http://voyeurtools.org/tool/' + voyeurTool + '/?inputFormat=RSS2&splitDocuments=true&corpus=' + pageURLStrip + '&archive=' + pageURL;
+	var fullVoyeurURL = 'http://voyeurtools.org/tool/' + voyeurTool + '/?inputFormat=RSS2&splitDocuments=true';
+  if (removeFuncWords == '1') {
+    fullVoyeurURL += '&stopList=stop.en.taporware.txt';
+  }
+  fullVoyeurURL += '&corpus=' + pageURLStrip + '&archive=' + pageURL;
 	// Change the iFrame link to the custom URL for Voyeur, and remove the iFrame from being hidden.
 	voyeurIframe.attr({
 		// This is the URL to be sent to retrieve Voyeur information.
