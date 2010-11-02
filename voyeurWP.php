@@ -212,20 +212,29 @@ if (!class_exists('VoyeurWP')) {
 					}
 				?>
 				<h3><?php echo __('General settings'); ?></h3>
-				<h4><strong><?php echo __('Dimensions of '); echo 'Voyeur (px):'; ?></strong></h4>
 				<table width="100%">
 					<tr>
-						<td width="50%" valign="top">
+						<td width="30%" valign="baseline">
 							<label for="voyeur_width">
-								<input type="text" name="voyeur_width" size="5" maxlength="3" autocomplete="off"
-									value="<?php if (isset($vwpOptions['voyeur_width'])) echo $vwpOptions['voyeur_width']; ?>"
-								/>
-							</label>&nbsp;&nbsp;&nbsp;x
+                <h5><?php echo __('Width:'); ?></h5>
+							</label>
 						</td>
-						<td width="50%" valign="top">
+						<td width="70%" valign="baseline">
+							<input type="text" name="voyeur_width" size="5" maxlength="4" autocomplete="off"
+								value="<?php if (isset($vwpOptions['voyeur_width'])) echo $vwpOptions['voyeur_width']; ?>"
+							/>&nbsp;%
+						</td>
+					</tr>
+          <tr>
+						<td width="30%" valign="baseline">
+							<label for="voyeur_height">
+                <h5><?php echo __('Height:'); ?></h5>
+							</label>
+						</td>
+						<td width="70%" valign="baseline">
 							<input type="text" name="voyeur_height" size="5" maxlength="4" autocomplete="off"
 								value="<?php if (isset($vwpOptions['voyeur_height'])) echo $vwpOptions['voyeur_height']; ?>"
-							/>
+							/>&nbsp;px
 						</td>
 					</tr>
 				</table>
@@ -465,7 +474,7 @@ if (!class_exists('VoyeurWP')) {
 		 * @param array $adminOptions The set of administrative settings/options for use within the widget settings screen.
 		 */
 		function vwp_getAdminOptions() {
-			$adminOptions = array( 'voyeur_width' => '200',
+			$adminOptions = array( 'voyeur_width' => '100',
 				'voyeur_height' => '250', 'voyeur_tool' => 'Cirrus', 'allow_auto_reveal' => 1,
 				'allow_user' => NULL, 'remove_func_words' => 1, 'allow_post_reveal' => NULL, 'voyeur_tags' => '', 'voyeur_time_day' => '', 'voyeur_time_month' => date('m'),
 				'voyeur_time_year' => ''
