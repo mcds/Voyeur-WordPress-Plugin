@@ -214,24 +214,24 @@ if (!class_exists('VoyeurWP')) {
 				<h3><?php echo __('General settings'); ?></h3>
 				<table width="100%">
 					<tr>
-						<td width="30%" valign="baseline">
+						<td width="30%" style="vertical-align: middle;">
 							<label for="voyeur_width">
                 <h5><?php echo __('Width:'); ?></h5>
 							</label>
 						</td>
-						<td width="70%" valign="baseline">
+						<td width="70%" style="vertical-align: middle;">
 							<input type="text" name="voyeur_width" size="5" maxlength="4" autocomplete="off"
 								value="<?php if (isset($vwpOptions['voyeur_width'])) echo $vwpOptions['voyeur_width']; ?>"
 							/>&nbsp;%
 						</td>
 					</tr>
           <tr>
-						<td width="30%" valign="baseline">
+						<td width="30%" style="vertical-align: middle;">
 							<label for="voyeur_height">
                 <h5><?php echo __('Height:'); ?></h5>
 							</label>
 						</td>
-						<td width="70%" valign="baseline">
+						<td width="70%" style="vertical-align: middle;">
 							<input type="text" name="voyeur_height" size="5" maxlength="4" autocomplete="off"
 								value="<?php if (isset($vwpOptions['voyeur_height'])) echo $vwpOptions['voyeur_height']; ?>"
 							/>&nbsp;px
