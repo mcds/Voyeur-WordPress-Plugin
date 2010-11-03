@@ -442,7 +442,7 @@ if (!class_exists('VoyeurWP')) {
 			echo '</div>' . "\n";
 			?>
 
-			<input alt="#TB_inline?height=450&width=400&inlineId=voyeurControls" title="Voyeur - <?php echo __('Reveal your texts'); ?>" class="thickbox" type="button" value="Reveal" id="voyeurReveal" />
+			<input alt="#TB_inline?height=400&width=400&inlineId=voyeurControls" title="Voyeur - <?php echo __('Reveal your texts'); ?>" class="thickbox" type="button" value="Reveal" id="voyeurReveal" />
 			<div id="voyeurControls">
 				<br />
 				<h3><?php echo __('What should Voyeur reveal?'); ?></h3>
