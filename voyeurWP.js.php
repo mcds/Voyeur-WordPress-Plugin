@@ -194,7 +194,7 @@ function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voye
 
 	URLParams = rawurlencode(URLParams); // Encode params for Voyeur submission.
 	var pageURL = '<?php echo $pageURL; ?>' + URLParams;
-	var pageURLStrip = '<?php echo preg_replace('/[\W]/', '', $pageURL); ?>' + URLParams;
+	var pageURLStrip = '<?php echo preg_replace('/[\W]/', '', $pageURL); ?>' + URLParams.replace(/[^a-zA-Z0-9]+/g, ''); //str.replace(/^[\s]+|[\s]+$/g, '');
 	voyeurLogo.attr('style', 'display:none;'); // Hide the Voyeur logo when user chooses options.
 	var fullVoyeurURL = 'http://voyeurtools.org/tool/' + voyeurTool + '/?inputFormat=RSS2&splitDocuments=true';
   if (removeFuncWords == '1') {
