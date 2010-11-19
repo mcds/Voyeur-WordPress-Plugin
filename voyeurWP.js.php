@@ -124,6 +124,7 @@ jQuery(document).ready(function($) {
 
     $('.voyeurRevealPost').click(function() {
     	URLParams = '?feed=voyeur'; // Initialize base parameters for Voyeur.
+      var unixTimestamp = '';
     	// Find the values of all of the divs with date information
     	$('#' + $(this).attr('name')).children('div').each(function() {
 				if ($(this).attr('title') == 'reveal_author') {
@@ -143,8 +144,11 @@ jQuery(document).ready(function($) {
     		} else if ($(this).attr('title') == 'reveal_year') {
     			URLParams += '&year=' + $(this).html();
     		}
+        if ($(this).attr('title') == 'reveal_unix_timestamp') {
+          unixTimestamp = $(this).html();
+        }
     	});
-    	vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, URLParams);
+    	vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, URLParams, unixTimestamp);
     });
 
 }); // end jQuery function($)
@@ -180,8 +184,9 @@ function vwp_loadAjax(voyeurWindowAjax, ajaxRef) { // Launch the Thickbox via AJ
  * @param object voyeurIframe References jQuery where the IFrame is.
  * @param object viewSeparate References jQuery where the viewSeparate div is.
  * @param string URLParams The set user URL Params. (This may not always be set if users cannot choose settings.)
+ * @param string unixTimestamp The unix timestamp for the last post modified OR the timestamp of individual revealed post.
  */
-function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, URLParams) {
+function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, URLParams, unixTimestamp) {
 	if (typeof URLParams == 'undefined') { // If user did not set params, set params to admin-defined options (with commas after value.)
 		URLParams = '?feed=voyeur';
 		URLParams += '&author=' + '<?php if (isset($vwpOptions['voyeur_authors'])) echo $vwpOptions['voyeur_authors']; ?>';
@@ -194,7 +199,10 @@ function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voye
 
 	URLParams = rawurlencode(URLParams); // Encode params for Voyeur submission.
 	var pageURL = '<?php echo $pageURL; ?>' + URLParams;
-	var pageURLStrip = '<?php echo preg_replace('/[\W]/', '', $pageURL); ?>' + URLParams.replace(/[^a-zA-Z0-9]+/g, ''); //str.replace(/^[\s]+|[\s]+$/g, '');
+	var pageURLStrip = '<?php echo preg_replace('/[\W]/', '', $pageURL); ?>' + URLParams.replace(/[^a-zA-Z0-9]+/g, '');
+  if (typeof unixTimestamp != 'undefined' && unixTimestamp != '') { // Add the unix timestamp to the corpus if it exists. (For backend Voyeur use.)
+    pageURLStrip += unixTimestamp;
+  }
 	voyeurLogo.attr('style', 'display:none;'); // Hide the Voyeur logo when user chooses options.
 	var fullVoyeurURL = 'http://voyeurtools.org/tool/' + voyeurTool + '/?inputFormat=RSS2&splitDocuments=true';
   if (removeFuncWords == '1') {

@@ -518,6 +518,7 @@ if (!class_exists('VoyeurWP')) {
 				$content .= '<div title="reveal_day">' . get_the_date('d') . '</div>';
 				$content .= '<div title="reveal_month">' . get_the_date('m') . '</div>';
 				$content .= '<div title="reveal_year">' . get_the_date('Y') . '</div>';
+        $content .= '<div title="reveal_unix_timestamp">' . strtotime(get_the_date('Y-m-d G:i:s')) . '</div>';
 				$content .= '</div>';
 			}
 			return $content;
