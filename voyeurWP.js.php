@@ -40,7 +40,8 @@ jQuery(document).ready(function($) {
 	var allowUser = '<?php if (isset($vwpOptions['allow_user'])) echo $vwpOptions['allow_user']; ?>';
   var removeFuncWords = '<?php if (isset($vwpOptions['remove_func_words'])) echo $vwpOptions['remove_func_words']; ?>';
   // Unix timestamp of latest post.
-  var unixTimestamp = '<?php $postList=get_posts("numberposts=1&order=DESC"); foreach($postList as $post) { setup_postdata($post); } echo strtotime(get_the_date("Y-m-d G:i:s")); ?>';
+  // var unixTimestamp = '<?php $postList=get_posts("numberposts=1&order=DESC"); foreach($postList as $post) { setup_postdata($post); } echo strtotime(get_the_date("Y-m-d G:i:s")); ?>';
+  var unixTimestamp = '<?php if (isset($vwpOptions['voyeur_unix_timestamp'])) echo $vwpOptions['voyeur_unix_timestamp']; ?>';
 	var voyeurWindow = $('#voyeurControls');
 	var voyeurWindowAjax = $('#voyeurControlsAjax');
 	var voyeurLogo = $('#voyeurLogo');
