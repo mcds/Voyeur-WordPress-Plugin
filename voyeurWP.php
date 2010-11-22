@@ -147,7 +147,7 @@ if (!class_exists('VoyeurWP')) {
 					// Find out which available categories are filtered.
 					if (isset($_POST['voyeur_author_' . $author->ID]) && $_POST['voyeur_author_' . $author->ID] == 'on') {
 						$vwpOptions['voyeur_author_' . $author->ID] = 1;
-						// Create 'voyeur_authors' to be passed as URL params later in voyeurWP.js.php.
+						// Create 'voyeur_authors' to be passed as URL params later in voyeurWP.js.php AND for unix timestamp.
 						if (isset($vwpOptions['voyeur_authors'])) {
 							$vwpOptions['voyeur_authors'] .= ',' . $author->ID;
 						} else {
@@ -164,7 +164,7 @@ if (!class_exists('VoyeurWP')) {
 					// Find out which available categories are filtered.
 					if (isset($_POST['voyeur_cat_' . $category->term_id]) && $_POST['voyeur_cat_' . $category->term_id] == 'on') {
 						$vwpOptions['voyeur_cat_' . $category->term_id] = 1;
-						// Create 'voyeur_categories' to be passed as URL params later in voyeurWP.js.php.
+						// Create 'voyeur_categories' to be passed as URL params later in voyeurWP.js.php AND for unix timestamp.
 						if (isset($vwpOptions['voyeur_categories'])) {
 							$vwpOptions['voyeur_categories'] .= ',' . $category->term_id;
 						} else {
@@ -200,6 +200,33 @@ if (!class_exists('VoyeurWP')) {
 						$vwpOptions['voyeur_time_year'] = '';
 					}
 				}
+
+        // Set the latest post UNIX timestamp for unique corpus identification later.
+        $postSorting = 'post_status=publish';
+        if (isset($vwpOptions['voyeur_authors']) && $vwpOptions['voyeur_authors'] != '') {
+          $postSorting .= '&author=' . $vwpOptions['voyeur_authors'];
+        }
+        if (isset($vwpOptions['voyeur_categories']) && $vwpOptions['voyeur_categories'] != '') {
+          $postSorting .= '&cat=' . $vwpOptions['voyeur_categories'];
+        }
+        if (isset($vwpOptions['voyeur_tags']) && $vwpOptions['voyeur_tags'] != '') {
+          $postSorting .= '&tag=' . $vwpOptions['voyeur_tags'];
+        }
+        if (isset($vwpOptions['voyeur_time_day']) && $vwpOptions['voyeur_time_day'] != '') {
+          $postSorting .= '&day=' . $vwpOptions['voyeur_time_day'];
+        }
+        if (isset($vwpOptions['voyeur_time_month']) && $vwpOptions['voyeur_time_month'] != '') {
+          $postSorting .= '&monthnum=' . $vwpOptions['voyeur_time_month'];
+        }
+        if (isset($vwpOptions['voyeur_time_year']) && $vwpOptions['voyeur_time_year'] != '') {
+          $postSorting .= '&year=' . $vwpOptions['voyeur_time_year'];
+        }
+        
+        $postSorting .= '&order=DESC&posts_per_page=1';
+        $postList = query_posts($postSorting);
+        foreach ($postList as $post) {
+          $vwpOptions['voyeur_unix_timestamp'] = strtotime($post->post_date_gmt);
+        }
 				update_option($this->widgetOptionsName, $vwpOptions);
 			 }
 			 ?>

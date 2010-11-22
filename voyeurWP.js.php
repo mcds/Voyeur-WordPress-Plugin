@@ -39,6 +39,8 @@ jQuery(document).ready(function($) {
 	var allowAutoReveal = '<?php if (isset($vwpOptions['allow_auto_reveal'])) echo $vwpOptions['allow_auto_reveal']; ?>';
 	var allowUser = '<?php if (isset($vwpOptions['allow_user'])) echo $vwpOptions['allow_user']; ?>';
   var removeFuncWords = '<?php if (isset($vwpOptions['remove_func_words'])) echo $vwpOptions['remove_func_words']; ?>';
+  // Unix timestamp of latest post.
+  var unixTimestamp = '<?php $postList=get_posts("numberposts=1&order=DESC"); foreach($postList as $post) { setup_postdata($post); } echo strtotime(get_the_date("Y-m-d G:i:s")); ?>';
 	var voyeurWindow = $('#voyeurControls');
 	var voyeurWindowAjax = $('#voyeurControlsAjax');
 	var voyeurLogo = $('#voyeurLogo');
@@ -55,7 +57,7 @@ jQuery(document).ready(function($) {
 		if (allowUser != 1) { // If allowAutoReveal is on and users cannot choose options, hide the 'Reveal' button.
       $('#voyeurReveal').attr('style', 'display:none;');
     }
-		vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate);
+		vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp);
 	}
 
   // ===============================
@@ -111,10 +113,10 @@ jQuery(document).ready(function($) {
 					URLParams += '&year=' + $('#voyeur_time_year').val();
 				}
 
-				vwp_loadVoyeur($('#voyeur_tool').val(), allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, URLParams);
+				vwp_loadVoyeur($('#voyeur_tool').val(), allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp, URLParams);
 			});
 		} else {
-			vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate);
+			vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp);
 		}
 	});
 
@@ -148,7 +150,7 @@ jQuery(document).ready(function($) {
           unixTimestamp = $(this).html();
         }
     	});
-    	vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, URLParams, unixTimestamp);
+    	vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp, URLParams);
     });
 
 }); // end jQuery function($)
@@ -186,7 +188,7 @@ function vwp_loadAjax(voyeurWindowAjax, ajaxRef) { // Launch the Thickbox via AJ
  * @param string URLParams The set user URL Params. (This may not always be set if users cannot choose settings.)
  * @param string unixTimestamp The unix timestamp for the last post modified OR the timestamp of individual revealed post.
  */
-function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, URLParams, unixTimestamp) {
+function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp, URLParams) {
 	if (typeof URLParams == 'undefined') { // If user did not set params, set params to admin-defined options (with commas after value.)
 		URLParams = '?feed=voyeur';
 		URLParams += '&author=' + '<?php if (isset($vwpOptions['voyeur_authors'])) echo $vwpOptions['voyeur_authors']; ?>';
