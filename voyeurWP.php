@@ -200,33 +200,8 @@ if (!class_exists('VoyeurWP')) {
 						$vwpOptions['voyeur_time_year'] = '';
 					}
 				}
-
-        // Set the latest post UNIX timestamp for unique corpus identification later.
-        $postSorting = 'post_status=publish';
-        if (isset($vwpOptions['voyeur_authors']) && $vwpOptions['voyeur_authors'] != '') {
-          $postSorting .= '&author=' . $vwpOptions['voyeur_authors'];
-        }
-        if (isset($vwpOptions['voyeur_categories']) && $vwpOptions['voyeur_categories'] != '') {
-          $postSorting .= '&cat=' . $vwpOptions['voyeur_categories'];
-        }
-        if (isset($vwpOptions['voyeur_tags']) && $vwpOptions['voyeur_tags'] != '') {
-          $postSorting .= '&tag=' . $vwpOptions['voyeur_tags'];
-        }
-        if (isset($vwpOptions['voyeur_time_day']) && $vwpOptions['voyeur_time_day'] != '') {
-          $postSorting .= '&day=' . $vwpOptions['voyeur_time_day'];
-        }
-        if (isset($vwpOptions['voyeur_time_month']) && $vwpOptions['voyeur_time_month'] != '') {
-          $postSorting .= '&monthnum=' . $vwpOptions['voyeur_time_month'];
-        }
-        if (isset($vwpOptions['voyeur_time_year']) && $vwpOptions['voyeur_time_year'] != '') {
-          $postSorting .= '&year=' . $vwpOptions['voyeur_time_year'];
-        }
-        
-        $postSorting .= '&order=DESC&posts_per_page=1';
-        $postList = query_posts($postSorting);
-        foreach ($postList as $post) {
-          $vwpOptions['voyeur_unix_timestamp'] = strtotime($post->post_date_gmt);
-        }
+        $vwpOptions['voyeur_unix_timestamp'] = $this->vwp_findUnixTimestamp($vwpOptions['voyeur_authors'], $vwpOptions['voyeur_categories'], $vwpOptions['voyeur_tags'], $vwpOptions['voyeur_time_day'], $vwpOptions['voyeur_time_month'], $vwpOptions['voyeur_time_year']);
+        print $vwpOptions['voyeur_unix_timestamp'];
 				update_option($this->widgetOptionsName, $vwpOptions);
 			 }
 			 ?>
@@ -326,7 +301,7 @@ if (!class_exists('VoyeurWP')) {
 							echo "\n" . '<br />';
 						}
 					}
-				
+
 					// Output the fields of tags and time.
 					echo $this->vwp_addTagsAndTimeFields('admin');
 				?>
@@ -336,6 +311,43 @@ if (!class_exists('VoyeurWP')) {
 			<!-- END ADMIN PAGE GENERATION -->
 		<?php
 		} // end function vwp_widgetPanelPrint()
+
+		/**
+		 * Finds the UNIX timestamp for the current operation.
+		 *
+		 * This function is accessed when an admin saves their settings to obtain the timestamp.
+     * It's also used to dynamically retrieve the timestamp when a user chooses custom
+     * filtering settings for Voyeur.
+		 *
+		 * @param string $authors, $categories, $tags, $day, $month, $year
+		 */    
+    function vwp_findUnixTimestamp($authors, $categories, $tags, $day, $month, $year) {
+      $postSorting = 'post_status=publish';
+      if (isset($authors) && $authors != '') {
+        $postSorting .= '&author=' . $authors;
+      }
+      if (isset($categories) && $categories != '') {
+        $postSorting .= '&cat=' . $categories;
+      }
+      if (isset($tags) && $tags != '') {
+        $postSorting .= '&tag=' . $tags;
+      }
+      if (isset($day) && $day != '') {
+        $postSorting .= '&day=' . $day;
+      }
+      if (isset($month) && $month != '') {
+        $postSorting .= '&monthnum=' . $month;
+      }
+      if (isset($year) && $year != '') {
+        $postSorting .= '&year=' . $year;
+      }
+      $postSorting .= '&order=DESC&posts_per_page=1';
+      $postList = query_posts($postSorting);
+      foreach ($postList as $post) {
+        $unixTimestamp = strtotime($post->post_modified); // Use post_modified to always get up-to-date timestamp.
+      }
+      return $unixTimestamp;
+    }
 
 		/**
 		 * Prints the tag and date input forms for filtering.
