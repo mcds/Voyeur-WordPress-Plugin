@@ -320,6 +320,7 @@ if (!class_exists('VoyeurWP')) {
      * filtering settings for Voyeur.
 		 *
 		 * @param string $authors, $categories, $tags, $day, $month, $year
+     *    All of the defined params about filtering Voyeur content.
 		 */    
     function vwp_findUnixTimestamp($authors, $categories, $tags, $day, $month, $year) {
       $postSorting = 'post_status=publish';

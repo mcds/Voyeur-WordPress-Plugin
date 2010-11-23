@@ -193,6 +193,37 @@ else if ($_POST['action'] == 'loadVals') {
 	echo json_encode($checkedIds); // Final output to voyeurWP.js.php.
 }
 
+////////////////////////////////
+////												////
+////  FIND UNIX TIMESTAMP		////
+////												////
+////////////////////////////////
+	
+else if ($_POST['action'] == 'findUnixTimestamp') {
+
+	if (isset($_POST['author'])) {
+		$unixAuthors = wp_kses($_POST['author'], array());
+	}
+	if (isset($_POST['category'])) {
+		$unixCategories = wp_kses($_POST['category'], array());
+	}
+	if (isset($_POST['tag'])) {
+		$unixTags = wp_kses($_POST['tag'], array());
+	}
+	if (isset($_POST['day'])) {
+		$unixDay = (int) absint($_POST['day']);
+	}
+	if (isset($_POST['monthnum'])) {
+		$unixMonth = (int) absint($_POST['monthnum']);
+	}
+	if (isset($_POST['year'])) {
+		$unixYear = (int) absint($_POST['year']);
+	}
+  
+	// Find the unix timestamp from user-defined filters.
+	echo $vwp->vwp_findUnixTimestamp($unixAuthors, $unixCategories, $unixTags, $unixDay, $unixMonth, $unixYear);
+}
+
 /**
  * Sanitizes user integer $_GET input.
  */

@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
 	$('#voyeurReveal').click(function() {
 		if (allowUser == '1') {
 			if (ajaxLaunch == false) { // Only load content once.
-				vwp_loadAjax(voyeurWindowAjax, ajaxRef);
+				vwp_loadAjax(voyeurWindowAjax, ajaxRef, 'voyeur_window');
 				ajaxLaunch = true;
 			}
 			// If submit was clicked, call Voyeur with custom params.
@@ -76,7 +76,7 @@ jQuery(document).ready(function($) {
 			// 		Commas are used after every param because it forces our params to be read
 			//		via RSS as filters if WP is using pretty permalinks.
 			$('#voyeurOptionsSubmit').click(function() {
-				URLParams = '?feed=voyeur'; // Initialize base parameters for Voyeur.
+				URLParams = ''; // URLParams will be used for unix timestamp params but also to be read for RSS.
 
 				// Find authors.
 				if ($('#voyeur_authors').find('input:checked').val()) { // If any boxes checked, go thru.
@@ -113,8 +113,13 @@ jQuery(document).ready(function($) {
 				if ($('#voyeur_time_year').val() != '') { // If any value, go thru.
 					URLParams += '&year=' + $('#voyeur_time_year').val();
 				}
-
+        
+        // Obtain the unix timestamp from custom user params via ajax.
+        unixTimestamp = vwp_loadAjax(voyeurWindowAjax, ajaxRef, 'unix_timestamp', URLParams);
+        
+        URLParams = '?' + URLParams + '&feed=voyeur'; // Place URLParams in format to be read as an actual URL.
 				vwp_loadVoyeur($('#voyeur_tool').val(), allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp, URLParams);
+        $('#voyeurOptionsSubmit').unbind('click'); // Unbind so function doesn't run multiple times.
 			});
 		} else {
 			vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp);
@@ -163,17 +168,33 @@ jQuery(document).ready(function($) {
  *
  * @param object voyeurWindowAjax References jQuery where the AJAX content will be generated.
  * @param object ajaxRef References a jQuery AJAX instance.
+ * @param string toLoad Which ajax request to perform.
+ * @param string URLParams The user filter params to send via ajax to get the unix timestamp.
+ *
+ * @return string The unix timestamp for the custom user filters.
  */
-function vwp_loadAjax(voyeurWindowAjax, ajaxRef) { // Launch the Thickbox via AJAX.
-		ajaxRef({
-			type: 'POST',
-			url: pluginURL + '/voyeurWP-ajax.php',
-			data: 'action=loadVoyeur',
-			success: function(msg) { // Run the function that shows our dialog if 'Reveal' clicked, and AJAX worked properly.
-				voyeurWindowAjax.html(msg); // Generate content within the AJAX div.
-				vwp_optionsListener(voyeurWindowAjax, ajaxRef); // Bind a listener to listen for user clicks.
-			}
-		});
+function vwp_loadAjax(voyeurWindowAjax, ajaxRef, toLoad, URLParams) { // Launch the Thickbox via AJAX.
+    if (toLoad == 'voyeur_window') {
+      ajaxRef({
+        type: 'POST',
+        url: pluginURL + '/voyeurWP-ajax.php',
+        data: 'action=loadVoyeur',
+        success: function(msg) { // Run the function that shows our dialog if 'Reveal' clicked, and AJAX worked properly.
+          voyeurWindowAjax.html(msg); // Generate content within the AJAX div.
+          vwp_optionsListener(voyeurWindowAjax, ajaxRef); // Bind a listener to listen for user clicks.
+        }
+      });
+    } else if (toLoad == 'unix_timestamp') {
+        // Find the user-filtered unix timestamp via ajax.
+        ajaxRef({
+          type: 'POST',
+          url: pluginURL + '/voyeurWP-ajax.php',
+          data: 'action=findUnixTimestamp' + URLParams,
+          success: function(unixTimestamp) {
+            return unixTimestamp;
+          }
+        });
+    }
 } // end vwp_loadAjax()
 
 /**
