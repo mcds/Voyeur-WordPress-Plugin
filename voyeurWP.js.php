@@ -118,8 +118,9 @@ jQuery(document).ready(function($) {
         unixTimestamp = vwp_loadAjax(voyeurWindowAjax, ajaxRef, 'unix_timestamp', URLParams);
         
         URLParams = '?' + URLParams + '&feed=voyeur'; // Place URLParams in format to be read as an actual URL.
+        
 				vwp_loadVoyeur($('#voyeur_tool').val(), allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp, URLParams);
-        $('#voyeurOptionsSubmit').unbind('click'); // Unbind so function doesn't run multiple times.
+        $('#voyeurOptionsSubmit').unbind('click'); // Unbind so ajax request isn't executed multiple times.
 			});
 		} else {
 			vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp);
@@ -170,10 +171,12 @@ jQuery(document).ready(function($) {
  * @param object ajaxRef References a jQuery AJAX instance.
  * @param string toLoad Which ajax request to perform.
  * @param string URLParams The user filter params to send via ajax to get the unix timestamp.
+ * @param string currentUnixTimestamp A hidden div where we can generate the ajax query of user defined unix timestamp.
  *
  * @return string The unix timestamp for the custom user filters.
  */
-function vwp_loadAjax(voyeurWindowAjax, ajaxRef, toLoad, URLParams) { // Launch the Thickbox via AJAX.
+function vwp_loadAjax(voyeurWindowAjax, ajaxRef, toLoad, URLParams, currentUnixTimestamp) { // Launch the Thickbox via AJAX.
+    var unixTimestamp = '';
     if (toLoad == 'voyeur_window') {
       ajaxRef({
         type: 'POST',
@@ -188,12 +191,14 @@ function vwp_loadAjax(voyeurWindowAjax, ajaxRef, toLoad, URLParams) { // Launch 
         // Find the user-filtered unix timestamp via ajax.
         ajaxRef({
           type: 'POST',
+          async: false, // Wait until ajax completes.
           url: pluginURL + '/voyeurWP-ajax.php',
           data: 'action=findUnixTimestamp' + URLParams,
-          success: function(unixTimestamp) {
-            return unixTimestamp;
+          success: function(msg) {
+            unixTimestamp = msg;
           }
         });
+        return unixTimestamp;
     }
 } // end vwp_loadAjax()
 
