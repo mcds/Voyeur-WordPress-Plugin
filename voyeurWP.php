@@ -201,7 +201,6 @@ if (!class_exists('VoyeurWP')) {
 					}
 				}
         $vwpOptions['voyeur_unix_timestamp'] = $this->vwp_findUnixTimestamp($vwpOptions['voyeur_authors'], $vwpOptions['voyeur_categories'], $vwpOptions['voyeur_tags'], $vwpOptions['voyeur_time_day'], $vwpOptions['voyeur_time_month'], $vwpOptions['voyeur_time_year']);
-        print $vwpOptions['voyeur_unix_timestamp'];
 				update_option($this->widgetOptionsName, $vwpOptions);
 			 }
 			 ?>

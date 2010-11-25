@@ -40,13 +40,11 @@ jQuery(document).ready(function($) {
 	var allowUser = '<?php if (isset($vwpOptions['allow_user'])) echo $vwpOptions['allow_user']; ?>';
   var removeFuncWords = '<?php if (isset($vwpOptions['remove_func_words'])) echo $vwpOptions['remove_func_words']; ?>';
   // Unix timestamp of latest post.
-  // var unixTimestamp = '<?php $postList=get_posts("numberposts=1&order=DESC"); foreach($postList as $post) { setup_postdata($post); } echo strtotime(get_the_date("Y-m-d G:i:s")); ?>';
   var unixTimestamp = '<?php if (isset($vwpOptions['voyeur_unix_timestamp'])) echo $vwpOptions['voyeur_unix_timestamp']; ?>';
 	var voyeurWindow = $('#voyeurControls');
 	var voyeurWindowAjax = $('#voyeurControlsAjax');
 	var voyeurLogo = $('#voyeurLogo');
 	var voyeurIframe = $('#voyeurIframe');
-	var viewSeparate = $('#viewSeparate');
 	var ajaxRef = $.ajax; // Create reference to jQuery's AJAX function.
 	var ajaxLaunch = false; // Create var to track if AJAX has been executed this session.
 
@@ -58,7 +56,7 @@ jQuery(document).ready(function($) {
 		if (allowUser != 1) { // If allowAutoReveal is on and users cannot choose options, hide the 'Reveal' button.
       $('#voyeurReveal').attr('style', 'display:none;');
     }
-		vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp);
+		vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, unixTimestamp);
 	}
 
   // ===============================
@@ -116,14 +114,14 @@ jQuery(document).ready(function($) {
         
         // Obtain the unix timestamp from custom user params via ajax.
         unixTimestamp = vwp_loadAjax(voyeurWindowAjax, ajaxRef, 'unix_timestamp', URLParams);
-        
+
         URLParams = '?' + URLParams + '&feed=voyeur'; // Place URLParams in format to be read as an actual URL.
-        
-				vwp_loadVoyeur($('#voyeur_tool').val(), allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp, URLParams);
+
+				vwp_loadVoyeur($('#voyeur_tool').val(), allowUser, removeFuncWords, voyeurLogo, voyeurIframe, unixTimestamp, URLParams);
         $('#voyeurOptionsSubmit').unbind('click'); // Unbind so ajax request isn't executed multiple times.
 			});
 		} else {
-			vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp);
+			vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, unixTimestamp);
 		}
 	});
 
@@ -157,7 +155,7 @@ jQuery(document).ready(function($) {
           unixTimestamp = $(this).html();
         }
     	});
-    	vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp, URLParams);
+    	vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, unixTimestamp, URLParams);
     });
 
 }); // end jQuery function($)
@@ -171,11 +169,9 @@ jQuery(document).ready(function($) {
  * @param object ajaxRef References a jQuery AJAX instance.
  * @param string toLoad Which ajax request to perform.
  * @param string URLParams The user filter params to send via ajax to get the unix timestamp.
- * @param string currentUnixTimestamp A hidden div where we can generate the ajax query of user defined unix timestamp.
- *
  * @return string The unix timestamp for the custom user filters.
  */
-function vwp_loadAjax(voyeurWindowAjax, ajaxRef, toLoad, URLParams, currentUnixTimestamp) { // Launch the Thickbox via AJAX.
+function vwp_loadAjax(voyeurWindowAjax, ajaxRef, toLoad, URLParams) { // Launch the Thickbox via AJAX.
     var unixTimestamp = '';
     if (toLoad == 'voyeur_window') {
       ajaxRef({
@@ -211,11 +207,10 @@ function vwp_loadAjax(voyeurWindowAjax, ajaxRef, toLoad, URLParams, currentUnixT
  * @param int allowUser Whether or not users are allowed to choose Voyeur options/settings.
  * @param object voyeurLogo References jQuery where the Voyeur logo div is.
  * @param object voyeurIframe References jQuery where the IFrame is.
- * @param object viewSeparate References jQuery where the viewSeparate div is.
  * @param string URLParams The set user URL Params. (This may not always be set if users cannot choose settings.)
  * @param string unixTimestamp The unix timestamp for the last post modified OR the timestamp of individual revealed post.
  */
-function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, viewSeparate, unixTimestamp, URLParams) {
+function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, unixTimestamp, URLParams) {
 	if (typeof URLParams == 'undefined') { // If user did not set params, set params to admin-defined options (with commas after value.)
 		URLParams = '?feed=voyeur';
 		URLParams += '&author=' + '<?php if (isset($vwpOptions['voyeur_authors'])) echo $vwpOptions['voyeur_authors']; ?>';
@@ -245,7 +240,6 @@ function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voye
 		width: "<?php if (isset($vwpOptions['voyeur_width'])) echo $vwpOptions['voyeur_width']; else echo '100'; ?>%",
 		height: "<?php if (isset($vwpOptions['voyeur_height'])) echo $vwpOptions['voyeur_height']; else echo '250'; ?>"
 	}).removeAttr('style'); // Remove 'display:none'.
-	//viewSeparate.html('<small><a href="'+ fullVoyeurURL +'" target="_blank"><?php echo __('View in separate window.'); ?></a></small>');
 } // end vwp_loadVoyeur()
 
 /**
