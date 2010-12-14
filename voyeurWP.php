@@ -52,6 +52,18 @@ if (!class_exists('VoyeurWP')) {
 		}
 
 		/**
+		 * Loads external libraries into the head of the admin panel.
+		 *
+		 * Note that this only happens if our location IS an adminstrative page.
+		 */
+		function vwp_addAdminHeaderCode() { // Load our external libraries.
+      if (is_admin() && is_active_widget(FALSE, FALSE, 'voyeur')) {
+        //wp_enqueue_script('jquery');
+        wp_enqueue_script('vwp-admin-js', VWP_URL . '/voyeurWP-admin.js', array('jquery'), '1.0'); // Loads our javascript ONLY if jquery has loaded.
+      }
+		} // end vwp_addHeaderCode()
+    
+		/**
 		 * Loads external libraries into the head of the page.
 		 *
 		 * Note that this only happens if our location is NOT an adminstrative page.
@@ -73,7 +85,7 @@ if (!class_exists('VoyeurWP')) {
 		 *
 		 * @param string $args Specific theme information to incorporate.
 		 */
-		function vwp_establishWidget($args) { // Displays the title of the widget.
+		function vwp_establishWidgetContent($args) { // Displays the title of the widget.
 			extract($args); // Extracts the necessary theme information.
 			echo $before_widget; // Echo necessary theme tags before echo widget title.
 			echo $before_title;
@@ -82,7 +94,7 @@ if (!class_exists('VoyeurWP')) {
 			echo '<div style="text-align:center; margin:0 auto;">'; // Create a div to center content in.
 			$this->vwp_displayContent(); // Output content of plugin.
 			echo '</div>';
-		} // end vwp_establishWidget()
+		} // end vwp_establishWidgetContent()
 
 		/**
 		 * Prints the widget controls within the admin panel. (Appearance > Widgets)
@@ -135,10 +147,21 @@ if (!class_exists('VoyeurWP')) {
 				} else {
 					$vwpOptions['allow_post_reveal'] = NULL;
 				}
-				if (isset($_POST['remove_func_words']) && $_POST['remove_func_words'] == 'on') {
+        // Save value if it applies to the tool selected.
+				if (isset($_POST['remove_func_words']) && $_POST['remove_func_words'] == 'on' && in_array($vwpOptions['voyeur_tool'], array('Bubbles', 'Cirrus', 'CorpusTypeFrequenciesGrid', 'Links', 'CorpusSummary'))) {
 					$vwpOptions['remove_func_words'] = 1;
 				} else {
 					$vwpOptions['remove_func_words'] = NULL;
+				}
+				if (is_numeric($_POST['voyeur_limit_input']) && $vwpOptions['voyeur_tool'] == 'Cirrus') {
+					$vwpOptions['voyeur_limit_input'] = (int) absint($_POST['voyeur_limit_input']);
+				} else {
+					$vwpOptions['voyeur_limit_input'] = NULL;
+				}
+				if (isset($_POST['voyeur_query_input']) && $vwpOptions['voyeur_tool'] == 'CorpusTypeFrequenciesGrid') {
+					$vwpOptions['voyeur_query_input'] = wp_kses($_POST['voyeur_query_input'], array());
+				} else {
+					$vwpOptions['voyeur_query_input'] = NULL;
 				}
 
 				$vwpOptions['voyeur_authors'] = NULL; // Reset voyeur_authors to read in new selected authors.
@@ -240,7 +263,7 @@ if (!class_exists('VoyeurWP')) {
 					</tr>
 				</table>
 				<h4><strong><?php echo __('Tool:'); ?></strong></h4>
-				<select name="voyeur_tool" title="<?php echo 'Voyeur '; echo __('tool selection.'); ?>">
+				<select id="voyeur_tool" name="voyeur_tool" title="<?php echo 'Voyeur '; echo __('tool selection.'); ?>">
 					<option value="Bubbles"<?php if ($vwpOptions['voyeur_tool'] == 'Bubbles') echo 'selected="selected"'; echo '>' . __('Bubbles'); ?></option>
 					<option value="Cirrus"<?php if ($vwpOptions['voyeur_tool'] == 'Cirrus' || !isset($vwpOptions['voyeur_tool'])) echo 'selected="selected"'; ?>>Cirrus</option>
 					<option value="CorpusTypeFrequenciesGrid"<?php if ($vwpOptions['voyeur_tool'] == 'CorpusTypeFrequenciesGrid') echo 'selected="selected"'; echo '>' . __('Frequency Grid'); ?></option>
@@ -263,10 +286,24 @@ if (!class_exists('VoyeurWP')) {
 					<input type="checkbox" name="allow_post_reveal" <?php if ($vwpOptions['allow_post_reveal'] == 1) echo ' checked="checked" '; ?>/>
 					<label for="allow_post_reveal"><?php echo __('Generate links to reveal individual posts.'); ?></label>
 				</p>
-				<p>
-					<input type="checkbox" name="remove_func_words" <?php if ($vwpOptions['remove_func_words'] == 1) echo ' checked="checked" '; ?>/>
-					<label for="remove_func_words"><?php echo __('Remove function words like "the".'); ?></label>
-				</p>
+        <div id='remove_func_words' style='display:none'>
+          <p>
+            <input type="checkbox" name="remove_func_words" <?php if ($vwpOptions['remove_func_words'] == 1) echo ' checked="checked" '; ?>/>
+            <label for="remove_func_words"><?php echo __('Remove function words like "the".'); ?></label>
+          </p>
+        </div>
+        <div id='voyeur_limit' style='display:none'>
+          <p>
+            <h4><strong><?php echo __('Number of words to display:'); ?></strong></h4>
+            <input id="voyeur_limit_input" class="widefat" type="text" name="voyeur_limit_input" value="<?php if (isset($vwpOptions['voyeur_limit_input'])) echo $vwpOptions['voyeur_limit_input']; ?>" />
+          </p>
+				</div>
+        <div id='voyeur_query' style='display:none'>
+          <p>
+            <h4><strong><?php echo __('Search term:'); ?></strong></h4>
+            <input id="voyeur_query_input" class="widefat" type="text" name="voyeur_query_input" value="<?php if (isset($vwpOptions['voyeur_query_input'])) echo $vwpOptions['voyeur_query_input']; ?>" />
+          </p>
+				</div>
 				<hr />
 				<h3><?php echo __('Filter settings'); ?></h3>
 				<small><?php echo __('These settings determine which posts Voyeur will analyze or "reveal".'); ?></small>
@@ -515,8 +552,8 @@ if (!class_exists('VoyeurWP')) {
 		function vwp_getAdminOptions() {
 			$adminOptions = array( 'voyeur_width' => '100',
 				'voyeur_height' => '250', 'voyeur_tool' => 'Cirrus', 'allow_auto_reveal' => 1,
-				'allow_user' => NULL, 'remove_func_words' => 1, 'allow_post_reveal' => NULL, 'voyeur_tags' => '', 'voyeur_time_day' => '', 'voyeur_time_month' => date('m'),
-				'voyeur_time_year' => ''
+				'allow_user' => NULL, 'remove_func_words' => 1, 'allow_post_reveal' => NULL, 'voyeur_limit_input' => '',
+        'voyeur_query_input' => ''
 				);
 			$vwpOptions = get_option($this->widgetOptionsName);
 			// If options previously set, retrieves them and overwrites our defaults set
@@ -570,8 +607,8 @@ if (!class_exists('VoyeurWP')) {
  */
 function vwp_establishWidget() {
 	global $vwp; // Use 'global' because defined outside of this function.
-	wp_register_sidebar_widget('voyeur', 'Voyeur', array(&$vwp, 'vwp_establishWidget'), array('description' => 'Performs text analysis on any number of posts'));
-	register_widget_control('voyeur', array(&$vwp, 'vwp_widgetPanelPrint'));
+	wp_register_sidebar_widget('voyeur', 'Voyeur', array(&$vwp, 'vwp_establishWidgetContent'), array('description' => 'Performs text analysis on any number of posts'));
+	wp_register_widget_control('voyeur', 'Voyeur', array(&$vwp, 'vwp_widgetPanelPrint'));
 } // end function vwp_establishWidget()
 
 /**
@@ -614,6 +651,7 @@ if (function_exists('wp_register_sidebar_widget')) {
 		$vwpOptions = $vwp->vwp_getAdminOptions();		
 		add_action('init', 'vwp_addFeed'); // Add our custom feed for Voyeur when WP starts.
 		add_action('wp_head', array(&$vwp, 'vwp_addHeaderCode'), 1); // Call vwp_addHeaderCode to link to external libraries.
+    add_action('admin_init', array(&$vwp, 'vwp_addAdminHeaderCode')); // Call vwp_addAdminHeaderCode to link to external libraries.
 		add_action('plugins_loaded', 'vwp_establishWidget'); // Once plugins loaded, call the establishment function.
 
 		// If admin has allowed revealing by post and Voyeur widget exists, call function to add 'Reveal' link.

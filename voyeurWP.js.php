@@ -38,7 +38,6 @@ jQuery(document).ready(function($) {
 	var voyeurTool = '<?php if (isset($vwpOptions['voyeur_tool'])) echo $vwpOptions['voyeur_tool']; else echo 'Cirrus'; ?>';
 	var allowAutoReveal = '<?php if (isset($vwpOptions['allow_auto_reveal'])) echo $vwpOptions['allow_auto_reveal']; ?>';
 	var allowUser = '<?php if (isset($vwpOptions['allow_user'])) echo $vwpOptions['allow_user']; ?>';
-  var removeFuncWords = '<?php if (isset($vwpOptions['remove_func_words'])) echo $vwpOptions['remove_func_words']; ?>';
   // Unix timestamp of latest post.
   var unixTimestamp = '<?php if (isset($vwpOptions['voyeur_unix_timestamp'])) echo $vwpOptions['voyeur_unix_timestamp']; ?>';
 	var voyeurWindow = $('#voyeurControls');
@@ -56,7 +55,7 @@ jQuery(document).ready(function($) {
 		if (allowUser != 1) { // If allowAutoReveal is on and users cannot choose options, hide the 'Reveal' button.
       $('#voyeurReveal').attr('style', 'display:none;');
     }
-		vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, unixTimestamp);
+		vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, unixTimestamp);
 	}
 
   // ===============================
@@ -117,11 +116,11 @@ jQuery(document).ready(function($) {
 
         URLParams = '?' + URLParams + '&feed=voyeur'; // Place URLParams in format to be read as an actual URL.
 
-				vwp_loadVoyeur($('#voyeur_tool').val(), allowUser, removeFuncWords, voyeurLogo, voyeurIframe, unixTimestamp, URLParams);
+				vwp_loadVoyeur($('#voyeur_tool').val(), allowUser, voyeurLogo, voyeurIframe, unixTimestamp, URLParams);
         $('#voyeurOptionsSubmit').unbind('click'); // Unbind so ajax request isn't executed multiple times.
 			});
 		} else {
-			vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, unixTimestamp);
+			vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, unixTimestamp);
 		}
 	});
 
@@ -155,7 +154,7 @@ jQuery(document).ready(function($) {
           unixTimestamp = $(this).html();
         }
     	});
-    	vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, unixTimestamp, URLParams);
+    	vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, unixTimestamp, URLParams);
     });
 
 }); // end jQuery function($)
@@ -210,7 +209,7 @@ function vwp_loadAjax(voyeurWindowAjax, ajaxRef, toLoad, URLParams) { // Launch 
  * @param string URLParams The set user URL Params. (This may not always be set if users cannot choose settings.)
  * @param string unixTimestamp The unix timestamp for the last post modified OR the timestamp of individual revealed post.
  */
-function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voyeurIframe, unixTimestamp, URLParams) {
+function vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, unixTimestamp, URLParams) {
 	if (typeof URLParams == 'undefined') { // If user did not set params, set params to admin-defined options (with commas after value.)
 		URLParams = '?feed=voyeur';
 		URLParams += '&author=' + '<?php if (isset($vwpOptions['voyeur_authors'])) echo $vwpOptions['voyeur_authors']; ?>';
@@ -229,8 +228,16 @@ function vwp_loadVoyeur(voyeurTool, allowUser, removeFuncWords, voyeurLogo, voye
   }
 	voyeurLogo.attr('style', 'display:none;'); // Hide the Voyeur logo when user chooses options.
 	var fullVoyeurURL = 'http://voyeurtools.org/tool/' + voyeurTool + '/?inputFormat=RSS2&splitDocuments=true';
-  if (removeFuncWords == '1') {
+
+  // Begin to add additional Voyeur params.
+  if ('<?php if (isset($vwpOptions['remove_func_words'])) echo $vwpOptions['remove_func_words']; ?>' != '') {
     fullVoyeurURL += '&stopList=stop.en.taporware.txt';
+  }
+  if (voyeurTool == 'Cirrus' && '<?php if (isset($vwpOptions['voyeur_limit_input'])) echo $vwpOptions['voyeur_limit_input']; ?>' != '') {
+    fullVoyeurURL += '&limit=' + '<?php echo $vwpOptions['voyeur_limit_input']; ?>';
+  }
+  if (voyeurTool == 'CorpusTypeFrequenciesGrid' && '<?php if (isset($vwpOptions['voyeur_query_input'])) echo $vwpOptions['voyeur_query_input']; ?>' != '') {
+    fullVoyeurURL += '&query=' + '<?php echo $vwpOptions['voyeur_query_input']; ?>';
   }
   fullVoyeurURL += '&corpus=' + pageURLStrip + '&archive=' + pageURL;
 	// Change the iFrame link to the custom URL for Voyeur, and remove the iFrame from being hidden.
