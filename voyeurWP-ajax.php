@@ -30,7 +30,7 @@ if ($_POST['action'] == 'loadVoyeur') {
 	//////////////////////
 		
 	// Find all users who can post and HAVE posted something
-	$query = "SELECT ID, user_nicename FROM $wpdb->users WHERE ID IN (SELECT post_author FROM $wpdb->posts) ORDER BY user_nicename";
+	$query = "SELECT ID, user_nicename FROM $wpdb->users WHERE ID IN (SELECT post_author FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post') ORDER BY user_nicename";
 	$author_ids = $wpdb->get_results($wpdb->prepare($query));
 	// In case we want to limit by user TYPE, use code below...:
 	// (Although we already limit by user type with saying that we only take users who have POSTED something... See query above.)
@@ -127,9 +127,9 @@ else if ($_POST['action'] == 'loadVals') {
 	////   FIND AUTHORS  ///
 	////////////////////////
 	
-	$query = "SELECT ID FROM $wpdb->users WHERE ID IN (SELECT DISTINCT post_author FROM $wpdb->posts WHERE post_status = 'publish' ";
+	$query = "SELECT ID FROM $wpdb->users WHERE ID IN (SELECT DISTINCT post_author FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ";
 	if (isset($authors)) {
-		$query .= "AND ("; //ID IN (SELECT object_id FROM $wpdb->term_relationships WHERE ";
+		$query .= "AND (";
 		for ($i = 0; $i < count($authors); $i++) {
 			$query .= 'post_author = ' . $authors[$i];
 			if ($i != (count($authors) - 1) && count($authors) > 1) { // If we're not at the last author AND there's more than one, add 'OR' to our statement.
@@ -200,6 +200,7 @@ else if ($_POST['action'] == 'loadVals') {
 ////////////////////////////////
 	
 else if ($_POST['action'] == 'findUnixTimestamp') {
+	$unixAuthors = $unixCategories = $unixTags = $unixDay = $unixMonth = $unixYear = '';
 
 	if (isset($_POST['author'])) {
 		$unixAuthors = wp_kses($_POST['author'], array());
@@ -219,7 +220,7 @@ else if ($_POST['action'] == 'findUnixTimestamp') {
 	if (isset($_POST['year'])) {
 		$unixYear = (int) absint($_POST['year']);
 	}
-  
+
 	// Find the unix timestamp from user-defined filters.
 	echo $vwp->vwp_findUnixTimestamp($unixAuthors, $unixCategories, $unixTags, $unixDay, $unixMonth, $unixYear);
 }

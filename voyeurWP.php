@@ -106,7 +106,7 @@ if (!class_exists('VoyeurWP')) {
 			$vwpOptions = $this->vwp_getAdminOptions(); // Load pre-existing admin settings for the plugin.
 
 			// Generate authors for multiple later use.
-			$query = "SELECT ID, user_nicename FROM $wpdb->users WHERE ID IN (SELECT DISTINCT post_author FROM $wpdb->posts WHERE post_status = 'publish')";
+			$query = "SELECT ID, user_nicename FROM $wpdb->users WHERE ID IN (SELECT DISTINCT post_author FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post')";
 			$authors = $wpdb->get_results($wpdb->prepare($query));
 
 			// Generate categories for multiple later use.
@@ -264,13 +264,13 @@ if (!class_exists('VoyeurWP')) {
 				</table>
 				<h4><strong><?php echo __('Tool:'); ?></strong></h4>
 				<select id="voyeur_tool" name="voyeur_tool" title="<?php echo 'Voyeur '; echo __('tool selection.'); ?>">
-					<option value="Bubbles"<?php if ($vwpOptions['voyeur_tool'] == 'Bubbles') echo 'selected="selected"'; echo '>' . __('Bubbles'); ?></option>
+					<!-- <option value="Bubbles"<?php if ($vwpOptions['voyeur_tool'] == 'Bubbles') echo 'selected="selected"'; echo '>' . __('Bubbles'); ?></option> -->
 					<option value="Cirrus"<?php if ($vwpOptions['voyeur_tool'] == 'Cirrus' || !isset($vwpOptions['voyeur_tool'])) echo 'selected="selected"'; ?>>Cirrus</option>
-					<option value="CorpusTypeFrequenciesGrid"<?php if ($vwpOptions['voyeur_tool'] == 'CorpusTypeFrequenciesGrid') echo 'selected="selected"'; echo '>' . __('Frequency Grid'); ?></option>
-					<option value="Links"<?php if ($vwpOptions['voyeur_tool'] == 'Links') echo 'selected="selected"'; echo '>' . __('Links'); ?></option>
-					<option value="Reader"<?php if ($vwpOptions['voyeur_tool'] == 'Reader') echo 'selected="selected"'; echo '>' . __('Reader'); ?></option>
-					<option value="CorpusSummary"<?php if ($vwpOptions['voyeur_tool'] == 'CorpusSummary') echo 'selected="selected"'; echo '>' . __('Summary'); ?></option>
-					<option value="WordCountFountain"<?php if ($vwpOptions['voyeur_tool'] == 'WordCountFountain') echo 'selected="selected"'; echo '>' . __('Word Count Fountain'); ?></option>
+					<!-- <option value="CorpusTypeFrequenciesGrid"<?php if ($vwpOptions['voyeur_tool'] == 'CorpusTypeFrequenciesGrid') echo 'selected="selected"'; echo '>' . __('Frequency Grid'); ?></option> -->
+					<!-- <option value="Links"<?php if ($vwpOptions['voyeur_tool'] == 'Links') echo 'selected="selected"'; echo '>' . __('Links'); ?></option> -->
+					<!-- <option value="Reader"<?php if ($vwpOptions['voyeur_tool'] == 'Reader') echo 'selected="selected"'; echo '>' . __('Reader'); ?></option> -->
+					<!-- <option value="CorpusSummary"<?php if ($vwpOptions['voyeur_tool'] == 'CorpusSummary') echo 'selected="selected"'; echo '>' . __('Summary'); ?></option> -->
+					<!-- <option value="WordCountFountain"<?php if ($vwpOptions['voyeur_tool'] == 'WordCountFountain') echo 'selected="selected"'; echo '>' . __('Word Count Fountain'); ?></option> -->
 				</select>
 				<br />
 				<br />
@@ -378,7 +378,7 @@ if (!class_exists('VoyeurWP')) {
       if (isset($year) && $year != '') {
         $postSorting .= '&year=' . $year;
       }
-      $postSorting .= '&order=DESC&posts_per_page=1';
+
       $postList = query_posts($postSorting);
       foreach ($postList as $post) {
         $unixTimestamp = strtotime($post->post_modified); // Use post_modified to always get up-to-date timestamp.
@@ -526,13 +526,13 @@ if (!class_exists('VoyeurWP')) {
 				<br /><br />
 				<h4><strong><?php echo __('Tool:'); ?></strong></h4>
 					<select id="voyeur_tool" name="voyeur_tool" title="<?php echo __('Tool:'); ?>">
-						<option value="Bubbles"><?php echo __('Bubbles'); ?></option>
+						<!-- <option value="Bubbles"><?php echo __('Bubbles'); ?></option> -->
 						<option value="Cirrus" selected="selected">Cirrus</option>
-						<option value="CorpusTypeFrequenciesGrid"><?php echo __('Frequency Grid'); ?></option>
-						<option value="Links"><?php echo __('Links'); ?></option>
-						<option value="Reader"><?php echo __('Reader'); ?></option>
-						<option value="CorpusSummary"><?php echo __('Summary'); ?></option>
-						<option value="WordCountFountain"><?php echo __('Word Count Fountain'); ?></option>
+						<!-- <option value="CorpusTypeFrequenciesGrid"><?php echo __('Frequency Grid'); ?></option> -->
+						<!-- <option value="Links"><?php echo __('Links'); ?></option> -->
+						<!-- <option value="Reader"><?php echo __('Reader'); ?></option> -->
+						<!-- <option value="CorpusSummary"><?php echo __('Summary'); ?></option>-->
+						<!-- <option value="WordCountFountain"><?php echo __('Word Count Fountain'); ?></option> -->
 					</select>
 				<br />
 				<div id="voyeurControlsAjax"><!-- AJAX content generated HERE! --></div>
