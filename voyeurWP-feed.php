@@ -8,34 +8,42 @@ function vwp_rssDate($timestamp = NULL) {
   echo date(DATE_RSS, $timestamp);
 }
 
+global $wp_query; // Set the $wp_query instance so we can find $_GET vars.
 $postFilter = 'post_status=publish'; // Makes sure we're only retrieving published posts.
-if (isset($_GET)) {
-	if (isset($_GET['author'])) {
-		$postFilter .= '&author=' . wp_kses($_GET['author'], array());
+
+if (isset($wp_query->query_vars)) {
+	if (!empty($wp_query->query_vars['p'])) { // Post ID of actual post. (If we're filtering individual post.)
+		$postFilter .= '&p=' . (int) wp_kses($wp_query->query_vars['p'], array());
 	}
-	if (isset($_GET['cat'])) {
-		$postFilter .= '&cat=' . wp_kses($_GET['cat'], array());
+	if (!empty($wp_query->query_vars['name'])) { // Post slug of actual post. (If we're filtering individual post.)
+		$postFilter .= '&name=' . wp_kses($wp_query->query_vars['name'], array());
 	}
-	if (isset($_GET['tag'])) {
-		$postFilter .= '&tag=' . wp_kses($_GET['tag'], array());
+	if (!empty($wp_query->query_vars['author'])) {
+		$postFilter .= '&author=' . wp_kses($wp_query->query_vars['author'], array());
 	}
-	if (isset($_GET['second'])) {
-		$postFilter .= '&second=' . (int) wp_kses($_GET['second'], array());
+	if (!empty($wp_query->query_vars['cat'])) {
+		$postFilter .= '&cat=' . wp_kses($wp_query->query_vars['cat'], array());
 	}
-	if (isset($_GET['minute'])) {
-		$postFilter .= '&minute=' . (int) wp_kses($_GET['minute'], array());
+	if (!empty($wp_query->query_vars['tag'])) {
+		$postFilter .= '&tag=' . wp_kses($wp_query->query_vars['tag'], array());
 	}
-	if (isset($_GET['hour'])) {
-		$postFilter .= '&hour=' . (int) wp_kses($_GET['hour'], array());
+	if (!empty($wp_query->query_vars['second'])) {
+		$postFilter .= '&second=' . (int) wp_kses($wp_query->query_vars['second'], array());
 	}
-	if (isset($_GET['day'])) {
-		$postFilter .= '&day=' . (int) wp_kses($_GET['day'], array());
+	if (!empty($wp_query->query_vars['minute'])) {
+		$postFilter .= '&minute=' . (int) wp_kses($wp_query->query_vars['minute'], array());
 	}
-	if (isset($_GET['monthnum'])) {
-		$postFilter .= '&monthnum=' . (int) wp_kses($_GET['monthnum'], array());
+	if (!empty($wp_query->query_vars['hour'])) {
+		$postFilter .= '&hour=' . (int) wp_kses($wp_query->query_vars['hour'], array());
 	}
-	if (isset($_GET['year'])) {
-		$postFilter .= '&year=' . (int) wp_kses($_GET['year'], array());
+	if (!empty($wp_query->query_vars['day'])) {
+		$postFilter .= '&day=' . (int) wp_kses($wp_query->query_vars['day'], array());
+	}
+	if (!empty($wp_query->query_vars['monthnum'])) {
+		$postFilter .= '&monthnum=' . (int) wp_kses($wp_query->query_vars['monthnum'], array());
+	}
+	if (!empty($wp_query->query_vars['year'])) {
+		$postFilter .= '&year=' . (int) wp_kses($wp_query->query_vars['year'], array());
 	}
 }
 
@@ -43,6 +51,7 @@ $posts = query_posts($postFilter);
  
 header("Content-Type: application/rss+xml; charset=UTF-8");
 echo '<?xml version="1.0"?>';
+
 ?><rss version="2.0">
 <channel>
   <title>Voyeur Feed</title>
