@@ -20,7 +20,7 @@
 var pluginURL = '<?php echo VWP_URL; // VWP_URL already defined in voyeurWP.php. ?>';
 <?php
 	// The URL of the WP site.
-	$pageURL = get_bloginfo('url') . '/';
+	$pageURL = get_bloginfo('url');
 ?>
 
 // Load Thickbox animation and close button.
@@ -210,7 +210,12 @@ function vwp_loadAjax(voyeurWindowAjax, ajaxRef, toLoad, URLParams) { // Launch 
  * @param string unixTimestamp The unix timestamp for the last post modified OR the timestamp of individual revealed post.
  */
 function vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, unixTimestamp, URLParams) {
-	if (typeof URLParams == 'undefined') { // If user did not set params, set params to admin-defined options (with commas after value.)
+	if ('<?php if (isset($vwpOptions['allow_current_page'])) echo $vwpOptions['allow_current_page']; ?>' != '' && typeof URLParams == 'undefined') { // If we're revealing current page AND user hasn't chosen options
+		var pageURL = '<?php if (isset($_SERVER['HTTP_HOST'])) { echo 'http://' . $_SERVER['HTTP_HOST']; } ?>';
+		var currentPath = rawurlencode(window.location.pathname + '?feed=voyeur'); // Add the encoded path to the site AND specify that we're using Voyeur RSS
+		pageURL += currentPath;
+		var pageURLStrip = '<?php if (isset($_SERVER['HTTP_HOST'])) { echo preg_replace('/[\W]/', '', 'http://' . $_SERVER['HTTP_HOST']); } ?>' + currentPath.replace(/[^a-zA-Z0-9]+/g, '');
+	} else if (typeof URLParams == 'undefined') { // If user did not set params, set params to admin-defined options. (This means that the page was 'auto-revealed' by admin options.)
 		URLParams = '?feed=voyeur';
 		URLParams += '&author=' + '<?php if (isset($vwpOptions['voyeur_authors'])) echo $vwpOptions['voyeur_authors']; ?>';
 		URLParams += '&cat=' + '<?php if (isset($vwpOptions['voyeur_categories'])) echo $vwpOptions['voyeur_categories']; ?>';
@@ -220,9 +225,12 @@ function vwp_loadVoyeur(voyeurTool, allowUser, voyeurLogo, voyeurIframe, unixTim
 		URLParams += '&year=' + '<?php if (isset($vwpOptions['voyeur_time_year'])) echo $vwpOptions['voyeur_time_year']; ?>';
 	}
 
-	URLParams = rawurlencode(URLParams); // Encode params for Voyeur submission.
-	var pageURL = '<?php echo $pageURL; ?>' + URLParams;
-	var pageURLStrip = '<?php echo preg_replace('/[\W]/', '', $pageURL); ?>' + URLParams.replace(/[^a-zA-Z0-9]+/g, '');
+	if (typeof URLParams != 'undefined') { // If URLParams are set now, prepare the pageURLs with them
+		URLParams = rawurlencode(URLParams); // Encode params for Voyeur submission.
+		var pageURL = '<?php echo $pageURL; ?>' + '/' + URLParams;
+		var pageURLStrip = '<?php echo preg_replace('/[\W]/', '', $pageURL); ?>' + URLParams.replace(/[^a-zA-Z0-9]+/g, '');
+	}
+
   if (typeof unixTimestamp != 'undefined' && unixTimestamp != '') { // Add the unix timestamp to the corpus if it exists. (For backend Voyeur use.)
     pageURLStrip += unixTimestamp;
   }

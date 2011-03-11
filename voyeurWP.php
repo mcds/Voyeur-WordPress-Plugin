@@ -132,6 +132,11 @@ if (!class_exists('VoyeurWP')) {
 						$vwpOptions['voyeur_tool'] = 'Cirrus';
 					}
 				}
+				if (isset($_POST['allow_current_page']) && $_POST['allow_current_page'] == 'on') {
+					$vwpOptions['allow_current_page'] = 1;
+				} else {
+					$vwpOptions['allow_current_page'] = NULL;
+				}
 				if (isset($_POST['allow_auto_reveal']) && $_POST['allow_auto_reveal'] == 'on') {
 					$vwpOptions['allow_auto_reveal'] = 1;
 				} else {
@@ -274,6 +279,10 @@ if (!class_exists('VoyeurWP')) {
 				</select>
 				<br />
 				<br />
+				<p>
+					<input type="checkbox" name="allow_current_page"<?php if ($vwpOptions['allow_current_page'] == 1) echo ' checked="checked" '; ?>/>
+					<label for="allow_current_page"><?php echo __('Reveal items associated with current viewed page.'); ?></label>
+				</p>
 				<p>
 					<input type="checkbox" name="allow_auto_reveal"<?php if ($vwpOptions['allow_auto_reveal'] == 1) echo ' checked="checked" '; ?>/>
 					<label for="allow_auto_reveal"><?php echo __('Voyeur launches automatically on page load.'); ?></label>
@@ -551,7 +560,7 @@ if (!class_exists('VoyeurWP')) {
 		 */
 		function vwp_getAdminOptions() {
 			$adminOptions = array( 'voyeur_width' => '100',
-				'voyeur_height' => '250', 'voyeur_tool' => 'Cirrus', 'allow_auto_reveal' => 1,
+				'voyeur_height' => '250', 'voyeur_tool' => 'Cirrus', 'allow_current_page' => 1, 'allow_auto_reveal' => 1,
 				'allow_user' => NULL, 'remove_func_words' => 1, 'allow_post_reveal' => NULL, 'voyeur_limit_input' => '',
         'voyeur_query_input' => ''
 				);
@@ -648,7 +657,7 @@ if (function_exists('wp_register_sidebar_widget')) {
 	$vwp = new VoyeurWP();
 
 	if (isset($vwp)) {
-		$vwpOptions = $vwp->vwp_getAdminOptions();		
+		$vwpOptions = $vwp->vwp_getAdminOptions();
 		add_action('init', 'vwp_addFeed'); // Add our custom feed for Voyeur when WP starts.
 		add_action('wp_head', array(&$vwp, 'vwp_addHeaderCode'), 1); // Call vwp_addHeaderCode to link to external libraries.
     add_action('admin_init', array(&$vwp, 'vwp_addAdminHeaderCode')); // Call vwp_addAdminHeaderCode to link to external libraries.
