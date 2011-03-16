@@ -313,44 +313,46 @@ if (!class_exists('VoyeurWP')) {
             <input id="voyeur_query_input" class="widefat" type="text" name="voyeur_query_input" value="<?php if (isset($vwpOptions['voyeur_query_input'])) echo $vwpOptions['voyeur_query_input']; ?>" />
           </p>
 				</div>
-				<hr />
-				<h3><?php echo __('Filter settings'); ?></h3>
-				<small><?php echo __('These settings determine which posts Voyeur will analyze or "reveal".'); ?></small>
-				<?php
-					// ===========================
-					// ==   AUTHOR GENERATION   ==
-					// ===========================
-
-					if (count($authors) > 1) { // Only display author options if WP has used more than one author.
-						echo '<h4><strong>' . __('Filter by Author:') . '</strong></h4>';
-						foreach($authors as $author) {
-							echo '<input type="checkbox" ';
-							if (isset($vwpOptions['voyeur_author_' . $author->ID]) && $vwpOptions['voyeur_author_' . $author->ID] == 1) echo 'checked="checked"';
-							echo ' name="voyeur_author_' . $author->ID . '" />' . "\n";
-							echo '<label for="voyeur_author_' . $author->ID . '">' . $author->user_nicename . '</label>';
-							echo "\n" . '<br />';
+				<div id='filter_settings'>
+					<hr />
+					<h3><?php echo __('Filter settings'); ?></h3>
+					<small><?php echo __('These settings determine which posts Voyeur will analyze or "reveal".'); ?></small>
+					<?php
+						// ===========================
+						// ==   AUTHOR GENERATION   ==
+						// ===========================
+	
+						if (count($authors) > 1) { // Only display author options if WP has used more than one author.
+							echo '<h4><strong>' . __('Filter by Author:') . '</strong></h4>';
+							foreach($authors as $author) {
+								echo '<input type="checkbox" ';
+								if (isset($vwpOptions['voyeur_author_' . $author->ID]) && $vwpOptions['voyeur_author_' . $author->ID] == 1) echo 'checked="checked"';
+								echo ' name="voyeur_author_' . $author->ID . '" />' . "\n";
+								echo '<label for="voyeur_author_' . $author->ID . '">' . $author->user_nicename . '</label>';
+								echo "\n" . '<br />';
+							}
 						}
-					}
-				?>
-				<?php
-					// =============================
-					// ==   CATEGORY GENERATION   ==
-					// =============================
-					if (count($categories) > 1) { // Only display category options if WP has used more than one category.
-						echo '<h4><strong>' . __('Filter by Category:') . '</strong></h4>';
-						foreach($categories as $cat) {
-							echo '<input type="checkbox" ';
-							if (isset($vwpOptions['voyeur_cat_' . $cat->cat_ID]) && $vwpOptions['voyeur_cat_' . $cat->cat_ID] == 1) echo 'checked="checked"';
-							echo ' name="voyeur_cat_' . $cat->cat_ID . '" />' . "\n";
-							echo '<label for="voyeur_cat_' . $cat->cat_ID . '">' . $cat->cat_name . '</label>';
-							echo "\n" . '<br />';
+					?>
+					<?php
+						// =============================
+						// ==   CATEGORY GENERATION   ==
+						// =============================
+						if (count($categories) > 1) { // Only display category options if WP has used more than one category.
+							echo '<h4><strong>' . __('Filter by Category:') . '</strong></h4>';
+							foreach($categories as $cat) {
+								echo '<input type="checkbox" ';
+								if (isset($vwpOptions['voyeur_cat_' . $cat->cat_ID]) && $vwpOptions['voyeur_cat_' . $cat->cat_ID] == 1) echo 'checked="checked"';
+								echo ' name="voyeur_cat_' . $cat->cat_ID . '" />' . "\n";
+								echo '<label for="voyeur_cat_' . $cat->cat_ID . '">' . $cat->cat_name . '</label>';
+								echo "\n" . '<br />';
+							}
 						}
-					}
-
-					// Output the fields of tags and time.
-					echo $this->vwp_addTagsAndTimeFields('admin');
-				?>
-				<input type="hidden" id="voyeur_submit" name="voyeur_submit" value="1" />
+	
+						// Output the fields of tags and time.
+						echo $this->vwp_addTagsAndTimeFields('admin');
+					?>
+					<input type="hidden" id="voyeur_submit" name="voyeur_submit" value="1" />
+				</div>
 			</div>				
 
 			<!-- END ADMIN PAGE GENERATION -->
