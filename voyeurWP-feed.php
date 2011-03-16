@@ -58,6 +58,7 @@ $posts = query_posts($postFilter);
 header("Content-Type: application/rss+xml; charset=UTF-8");
 echo '<?xml version="1.0"?>';
 
+if (isset($posts)) {
 ?><rss version="2.0">
 <channel>
   <title>Voyeur Feed</title>
@@ -74,6 +75,8 @@ echo '<?xml version="1.0"?>';
     <pubDate><?php vwp_rssDate(strtotime($post->post_date_gmt)); ?></pubDate>
     <guid><?php echo get_permalink($post->ID); ?></guid>
   </item>
-<?php } ?>
+<?php } // end foreach
+} // end if
+?>
 </channel>
 </rss>
