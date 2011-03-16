@@ -533,7 +533,7 @@ if (!class_exists('VoyeurWP')) {
 			<div id="voyeurControls">
 				<br />
 				<h3><?php echo __('What should Voyeur reveal?'); ?></h3>
-				<small><?php echo __('These settings determine which articles '); echo '<a href="http://voyeurtools.org" target="_new">Voyeur</a>'; echo __(' will analyze or "reveal".'); ?></small>
+				<small><?php echo __('These settings determine which articles '); echo '<a href="http://voyeurtools.org" target="_new">Voyeur</a>'; echo __(' will analyze or "reveal" initially.'); ?></small>
 				<br /><br />
 				<h4><strong><?php echo __('Tool:'); ?></strong></h4>
 					<select id="voyeur_tool" name="voyeur_tool" title="<?php echo __('Tool:'); ?>">

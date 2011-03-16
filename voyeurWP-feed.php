@@ -19,10 +19,16 @@ if (isset($wp_query->query_vars)) {
 		$postFilter .= '&name=' . wp_kses($wp_query->query_vars['name'], array());
 	}
 	if (!empty($wp_query->query_vars['author'])) {
-		$postFilter .= '&author=' . wp_kses($wp_query->query_vars['author'], array());
+		$postFilter .= '&author=' . (int) wp_kses($wp_query->query_vars['author'], array());
+	}
+	if (!empty($wp_query->query_vars['author_name'])) {
+		$postFilter .= '&author_name=' . wp_kses($wp_query->query_vars['author_name'], array());
 	}
 	if (!empty($wp_query->query_vars['cat'])) {
-		$postFilter .= '&cat=' . wp_kses($wp_query->query_vars['cat'], array());
+		$postFilter .= '&cat=' . (int) wp_kses($wp_query->query_vars['cat'], array());
+	}
+	if (!empty($wp_query->query_vars['category_name'])) {
+		$postFilter .= '&category_name=' . wp_kses($wp_query->query_vars['category_name'], array());
 	}
 	if (!empty($wp_query->query_vars['tag'])) {
 		$postFilter .= '&tag=' . wp_kses($wp_query->query_vars['tag'], array());
@@ -58,8 +64,8 @@ echo '<?xml version="1.0"?>';
   <link>http://voyeurtools.org/</link>
   <description>The feed created for Voyeur.</description>
   <language>en-us</language>
-  <pubDate><?php vwp_rssDate(strtotime($posts[0]->post_date_gmt)); ?></pubDate>
-  <lastBuildDate><?php vwp_rssDate(strtotime($posts[0]->post_date_gmt)); ?></lastBuildDate>
+  <pubDate><?php if(isset($posts[0])) { vwp_rssDate(strtotime($posts[0]->post_date_gmt)); } ?></pubDate>
+  <lastBuildDate><?php if(isset($posts[0])) { vwp_rssDate(strtotime($posts[0]->post_date_gmt)); } ?></lastBuildDate>
 <?php foreach ($posts as $post) { ?>
   <item>
     <title><?php echo get_the_title($post->ID); ?></title>
