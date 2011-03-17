@@ -34,6 +34,10 @@ License: GPL2
 
 define('VWP_URL', WP_PLUGIN_URL . '/voyeurWP'); // Plugin URL.
 define('VWP_DIR', WP_PLUGIN_DIR . '/voyeurWP'); // Plugin directory.
+// For use in vwp_addTagsAndTimeFields().
+define("HALF_MONTH", 1314871); // Create timestamp halfway through January to cycle through months.
+define("WHOLE_MONTH", 2629743); // Amount of seconds in a month to add all necessary months.
+
 if (!class_exists('VoyeurWP')) {
 /**
  * Voyeur WordPress Class
@@ -447,7 +451,7 @@ if (!class_exists('VoyeurWP')) {
 			$finalOutput .= '>--</option>' . "\n";
 			for ($i = 1; $i <= 31; $i++) {
 				$finalOutput .= "<option value='$i'";
-				if ($vwpOptions['voyeur_time_day'] == $i && $type == 'admin') {
+				if (isset($vwpOptions['voyeur_time_day']) && $vwpOptions['voyeur_time_day'] == $i && $type == 'admin') {
 					$finalOutput .= " selected='selected'";
 				}
 				$finalOutput .= ">$i</option>" . "\n";
@@ -462,14 +466,14 @@ if (!class_exists('VoyeurWP')) {
 				$finalOutput .= " selected='selected'";
 			}
 			$finalOutput .= '>--</option>' . "\n";
-			$monthUnix = 1314871; // Create timestamp halfway through January to begin with.
-			for ($i = 1; $i <= 12; $i++) {
+			$monthUnix = HALF_MONTH;
+			for ($i = 1; $i <= 12; $i++) { // Cycle through and generate all the months via UNIX timestamp.
 				$finalOutput .= "<option value='$i'";
-				if ($vwpOptions['voyeur_time_month'] == $i && $type == 'admin') {
+				if (isset($vwpOptions['voyeur_time_month']) && $vwpOptions['voyeur_time_month'] == $i && $type == 'admin') {
 					$finalOutput .= " selected='selected'";
 				}
 				$finalOutput .= ">" . date('F', $monthUnix) . "</option>" . "\n";
-				$monthUnix += 2629743; // Add a whole month in seconds.
+				$monthUnix += WHOLE_MONTH;
 			}
 			$finalOutput .= '</select>';
 			$finalOutput .= '<select id="voyeur_time_year" name="voyeur_time_year">';
@@ -481,7 +485,7 @@ if (!class_exists('VoyeurWP')) {
 			if ($oldestYear != date('Y')) { // If oldest year doesn't match current year, create years in between.
 				for ($year = $oldestYear; $year <= date('Y'); $year++) {
 					// Assigns a variable that is whether the selected attribute should be included.
-					if ($vwpOptions['voyeur_time_year'] == $year && $type == 'admin') { // Find out which year is selected.
+					if (isset($vwpOptions['voyeur_time_year']) && $vwpOptions['voyeur_time_year'] == $year && $type == 'admin') { // Find out which year is selected.
 						$isSelected = " selected='selected'";
 					} else {
 						$isSelected = '';
