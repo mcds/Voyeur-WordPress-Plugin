@@ -4,7 +4,7 @@
  * @version 0.1
  */
 /*
-Plugin Name: Voyeur
+Plugin Name: eVoyeur Tools
 Plugin URI: http://voyeur.hermeneuti.ca/
 Description: Allows Voyeur to reveal text trends within your Wordpress posts.
 Version: 0.1
@@ -89,7 +89,7 @@ if (!class_exists('VoyeurWP')) {
 			extract($args); // Extracts the necessary theme information.
 			echo $before_widget; // Echo necessary theme tags before echo widget title.
 			echo $before_title;
-			echo 'Voyeur';
+			echo 'eVoyeur Tools';
 			echo $after_title; // Echo closing tags after echo widget title.
 			echo '<div style="text-align:center; margin:0 auto;">'; // Create a div to center content in.
 			$this->vwp_displayContent(); // Output content of plugin.
@@ -289,7 +289,7 @@ if (!class_exists('VoyeurWP')) {
 				</p>
 				<p>
 					<input type="checkbox" name="allow_user" <?php if ($vwpOptions['allow_user'] == 1) echo ' checked="checked" '; ?>/>
-					<label for="allow_user"><?php echo __('Allow users to choose Voyeur options.'); ?></label>
+					<label for="allow_user"><?php echo __('Allow users to choose Voyeur options. ("Reveal" button)'); ?></label>
 				</p>
 				<p>
 					<input type="checkbox" name="allow_post_reveal" <?php if ($vwpOptions['allow_post_reveal'] == 1) echo ' checked="checked" '; ?>/>
@@ -529,7 +529,7 @@ if (!class_exists('VoyeurWP')) {
 			echo '</div>' . "\n";
 			?>
 
-			<input alt="#TB_inline?height=400&width=400&inlineId=voyeurControls" title="Voyeur - <?php echo __('Reveal your texts'); ?>" class="thickbox" type="button" value="Reveal" id="voyeurReveal" />
+			<input alt="#TB_inline?height=450&width=400&inlineId=voyeurControls" title="eVoyeur Tools" class="thickbox" type="button" value="Reveal" id="voyeurReveal" />
 			<div id="voyeurControls">
 				<br />
 				<h3><?php echo __('What should Voyeur reveal?'); ?></h3>
@@ -618,8 +618,8 @@ if (!class_exists('VoyeurWP')) {
  */
 function vwp_establishWidget() {
 	global $vwp; // Use 'global' because defined outside of this function.
-	wp_register_sidebar_widget('voyeur', 'Voyeur', array(&$vwp, 'vwp_establishWidgetContent'), array('description' => 'Performs text analysis on any number of posts'));
-	wp_register_widget_control('voyeur', 'Voyeur', array(&$vwp, 'vwp_widgetPanelPrint'));
+	wp_register_sidebar_widget('voyeur', 'eVoyeur Tools', array(&$vwp, 'vwp_establishWidgetContent'), array('description' => 'Performs text analysis on any number of posts'));
+	wp_register_widget_control('voyeur', 'eVoyeur Tools', array(&$vwp, 'vwp_widgetPanelPrint'));
 } // end function vwp_establishWidget()
 
 /**

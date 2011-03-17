@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Voyeur Feed
+Template Name: eVoyeur Tools Feed
 */
  
 function vwp_rssDate($timestamp = NULL) {
@@ -61,7 +61,7 @@ echo '<?xml version="1.0"?>';
 if (isset($posts)) {
 ?><rss version="2.0">
 <channel>
-  <title>Voyeur Feed</title>
+  <title>eVoyeur Tools Feed</title>
   <link>http://voyeurtools.org/</link>
   <description>The feed created for Voyeur.</description>
   <language>en-us</language>
