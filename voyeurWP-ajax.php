@@ -229,7 +229,7 @@ else if ($_POST['action'] == 'findUnixTimestamp') {
  * Sanitizes user integer $_GET input.
  */
 function vwp_sanitizeNumerical($data) {
-	$sData = explode(',', rtrim(wp_kses($data, array()), ',')); // Explode into array while trimming and sanitizing.
+	$sData = explode(',', rtrim($data, ',')); // Explode into array while trimming.
 	for ($i = 0; $i < count($sData); $i++) {
 		$sData[$i] = (int) absint($sData[$i]); // Make sure data is int AND is not negative.
 	}
